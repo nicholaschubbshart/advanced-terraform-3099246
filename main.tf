@@ -1,16 +1,22 @@
 ### PROVIDER
-provider "google" {
+provider "aws" {
   project = "advancedterraform" #replace this with your project-id
-  region  = "us-central1"
-  zone    = "us-central1-a"
+  region = "ca-central-1"
 }
 
 ### NETWORK
-data "google_compute_network" "default" {
-  name                    = "default"
+resource "aws_vpc" "terra_vpc" {
+  cidr_block = "10.0.0.0/16"
 }
 
 ## SUBNET
+resource "aws_subnet" "terra_subnet_a" {
+  vpc_id = aws_vpc.terra_vpc.id
+  cidr_block = "10.0.0.0/20"
+  availability_zone = "ca-central-1"
+
+}
+
 resource "google_compute_subnetwork" "subnet-1" {
   name                     = "subnet1"
   ip_cidr_range            = "10.127.0.0/20"
