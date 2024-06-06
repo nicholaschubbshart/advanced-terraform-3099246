@@ -6,43 +6,24 @@ provider "aws" {
 
 ### NETWORK
 resource "aws_vpc" "terra_vpc" {
+  name = "terra_vpc"
   cidr_block = "10.0.0.0/16"
 }
 
 ## SUBNET
 resource "aws_subnet" "terra_subnet_a" {
-  vpc_id = aws_vpc.terra_vpc.id
+  vpc_id = terra_vpc.terra_vpc.id
   cidr_block = "10.0.0.0/20"
   availability_zone = "ca-central-1"
 
 }
 
-resource "google_compute_subnetwork" "subnet-1" {
-  name                     = "subnet1"
-  ip_cidr_range            = "10.127.0.0/20"
-  network                  = data.google_compute_network.default.self_link
-  region                   = "us-central1"
-  private_ip_google_access = true
-}
-
-resource "google_compute_firewall" "default" {
-  name    = "test-firewall"
-  network = data.google_compute_network.default.self_link
-
-  allow {
-    protocol = "icmp"
-  }
-
-  allow {
-    protocol = "tcp"
-    ports    = ["80", "8080", "1000-2000", "22"]
-  }
-
-  source_tags = ["web"]
-}
-
 ### COMPUTE
 ## NGINX PROXY
+data "aws_ami" "nginx_ami" {
+  
+}
+
 resource "google_compute_instance" "nginx_instance" {
   name         = "nginx-proxy"
   machine_type = "f1-micro"
